@@ -47,6 +47,9 @@ export const usePuzzleGame = () => {
     };
 
   const startPuzzleGame = () => {
+    if (playerLevel === 0 && hasClaimedForLevel) {
+        fetchPlayerLevel();
+    }
     resetClaimStatus();
     setCurrentScreen('puzzle');
     resetPuzzle();
@@ -65,7 +68,7 @@ export const usePuzzleGame = () => {
   const handleRewardClaim = async () => {
     try {
       await executeRewardClaim();
-      setPlayerLevel((prevLevel) => (prevLevel + 1) % 3);
+      await fetchPlayerLevel();
     } catch (error: unknown) {
       console.log(`${error instanceof Error ? error.message : 'An unknown error occurred during minting.'}`);
     }

@@ -65,16 +65,19 @@ export interface FarcasterWallet {
 
 export interface RewardTrackProps {
   playerLevel: number;
-  onClaim: () => void;
-  isClaiming: boolean;
-  hasClaimedForLevel: boolean;
 }
 
-export interface ClaimButtonProps {
-  level: number;
-  rewardType: string;
-  playerLevel: number;
-  isClaiming: boolean;
-  hasClaimedForLevel: boolean;
-  onClaim: () => void;
+export interface RewardLabelProps {
+  label: string;
+  position: string;
+  isUnlocked: boolean;
+}
+
+export interface RewardMarkerProps {
+  position: string;
+  isUnlocked: boolean;
+}
+
+export interface ProgressBarProps {
+  width: string;
 }

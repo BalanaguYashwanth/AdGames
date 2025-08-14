@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePuzzleGameContext } from '@/app/context/PuzzleGameContext';
 import { PUZZLE_CONFIG, PUZZLE_DIMENSIONS, PUZZLE_PATHS } from '../../utils/constants';
 import { generatePiecePath } from '../../utils/svgPathGenerator';
 import { calculateImagePosition } from '@/app/utils/puzzleHelpers';
@@ -11,6 +12,8 @@ interface SvgJigsawPieceProps {
 }
 
 export const SvgJigsawPiece = React.memo(({ piece, rowIndex, colIndex }: SvgJigsawPieceProps) => {
+  const { playerLevel } = usePuzzleGameContext();
+
   const clipPathId = `clip-${piece.id}`;
 
   const { imageX, imageY } = calculateImagePosition(rowIndex, colIndex);
@@ -40,7 +43,7 @@ export const SvgJigsawPiece = React.memo(({ piece, rowIndex, colIndex }: SvgJigs
       </defs>
 
       <image
-        href={PUZZLE_PATHS.COMPLETE}
+        href={PUZZLE_PATHS.LEVELS[playerLevel] ?? PUZZLE_PATHS.LEVELS[0]}
         width={PUZZLE_DIMENSIONS.BOARD_GRID_SIZE}
         height={PUZZLE_DIMENSIONS.BOARD_GRID_SIZE}
         x={imageX}

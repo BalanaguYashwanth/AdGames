@@ -2,9 +2,10 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract PuzzleRewards is Ownable {
+contract PuzzleRewards is Ownable, IERC721Receiver {
     IERC721 public immutable nftContract;
 
     mapping(address => uint256) public playerLevels;
@@ -52,4 +53,13 @@ contract PuzzleRewards is Ownable {
     }
 
     receive() external payable {}
+
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) external pure override returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
+    }
 }

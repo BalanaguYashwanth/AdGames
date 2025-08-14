@@ -137,7 +137,7 @@ export const getButtonText = (playerLevel: number) => {
   return 'Play Again';
 };
 
-export const getTargetProgressWidth = (level: number) => {
+export const getTargetProgressWidth = (level: number): string => {
   if (level === 0) return '25%'; 
   if (level === 1) return '75%'; 
   if (level === 2) return '100%';
