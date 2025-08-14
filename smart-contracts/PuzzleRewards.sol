@@ -3,63 +3,72 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
-contract PuzzleRewards is Ownable, IERC721Receiver {
+contract PuzzleRewards is Ownable, IERC721Receiver, ReentrancyGuard {
+    using Address for address payable;
+
     IERC721 public immutable nftContract;
 
-    mapping(address => uint256) public playerLevels;
+    enum Level { Easy, Medium, Hard, Completed }
+
+    mapping(address => Level) public playerLevels;
 
     uint256 public constant EASY_NFT_ID = 0;
     uint256 public constant MEDIUM_NFT_ID = 1;
     uint256 public constant HARD_REWARD_AMOUNT = 0.001 ether;
 
-    event RewardClaimed(address indexed player, uint256 level, string rewardType);
+    event RewardClaimed(address indexed player, Level level, string rewardType);
 
     constructor(address _nftContractAddress) Ownable(msg.sender) {
         require(_nftContractAddress != address(0), "Invalid NFT contract address");
         nftContract = IERC721(_nftContractAddress);
     }
 
-    function claimReward() external payable {
+    function claimReward() external nonReentrant {
         address player = msg.sender;
-        uint256 currentLevel = playerLevels[player];
+        Level currentLevel = playerLevels[player];
 
-        require(currentLevel < 3, "All reward levels completed. Play again to restart cycle.");
+        require(currentLevel != Level.Completed, "All reward levels completed.");
 
-        if (currentLevel == 0) {
-            nftContract.safeTransferFrom(address(this), player, EASY_NFT_ID);
+        if (currentLevel == Level.Easy) {
+            playerLevels[player] = Level.Medium;
             emit RewardClaimed(player, currentLevel, "Easy NFT");
-        } else if (currentLevel == 1) {
-            nftContract.safeTransferFrom(address(this), player, MEDIUM_NFT_ID);
+            nftContract.safeTransferFrom(address(this), player, EASY_NFT_ID);
+        } else if (currentLevel == Level.Medium) {
+            playerLevels[player] = Level.Hard;
             emit RewardClaimed(player, currentLevel, "Medium NFT"); 
-        } else if (currentLevel == 2) {
-            require(address(this).balance >= HARD_REWARD_AMOUNT, "Contract has insufficient funds for reward.");
+            nftContract.safeTransferFrom(address(this), player, MEDIUM_NFT_ID);
+        } else if (currentLevel == Level.Hard) {
+            require(address(this).balance >= HARD_REWARD_AMOUNT, "Insufficient funds for reward.");
+            playerLevels[player] = Level.Completed;
+            emit RewardClaimed(player, currentLevel, "Hard ETH");
             (bool success, ) = player.call{value: HARD_REWARD_AMOUNT}("");
             require(success, "Failed to send ETH reward.");
-            emit RewardClaimed(player, currentLevel, "Hard ETH");
         }
-
-        playerLevels[player] = (currentLevel + 1) % 3;
     }
 
-    function getPlayerLevel(address _player) external view returns (uint256) {
+    function getPlayerLevel(address _player) external view returns (Level) {
         return playerLevels[_player];
     } 
 
     function withdraw() external onlyOwner {
-        (bool success, ) = owner().call{value: address(this).balance}("");
-        require(success, "Withdrawal failed"); 
+        uint256 amount = address(this).balance;
+        require(amount > 0, "No balance to withdraw.");
+        payable(owner()).sendValue(amount); 
     }
 
     receive() external payable {}
 
     function onERC721Received(
-        address,
-        address,
-        uint256,
-        bytes calldata
-    ) external pure override returns (bytes4) {
+        address, /* _operator */
+        address, /* _from */
+        uint256, /* _tokenId */
+        bytes calldata /* _data */
+    ) external override returns (bytes4) {
+        require(msg.sender == address(nftContract), "Only the designated NFT contract can send NFTs");
         return IERC721Receiver.onERC721Received.selector;
     }
 }
