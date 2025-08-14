@@ -8,6 +8,7 @@ import { useAccount } from 'wagmi';
 import { readContract } from '@wagmi/core';
 import { config } from '@/lib/wagmiConfig';
 import { PUZZLE_REWARDS_ABI } from '@/lib/abi';
+import { preloadPuzzleImages } from '../utils/imagePreloader';
 
 const PUZZLE_REWARDS_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PUZZLE_REWARDS_CONTRACT_ADDRESS as `0x${string}`;
 
@@ -28,6 +29,10 @@ export const usePuzzleGame = () => {
   useEffect(() => {
     fetchPlayerLevel();
   }, [address, currentScreen]);
+
+  useEffect(() => {
+    preloadPuzzleImages()
+  }, []);
 
   const fetchPlayerLevel = async () => {
       if (address) {
