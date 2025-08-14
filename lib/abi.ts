@@ -5,10 +5,36 @@ export const PUZZLE_REWARDS_ABI = [
 				"internalType": "address",
 				"name": "_nftContractAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_priceFeed",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "FailedCall",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "balance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "needed",
+				"type": "uint256"
+			}
+		],
+		"name": "InsufficientBalance",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -62,9 +88,9 @@ export const PUZZLE_REWARDS_ABI = [
 			},
 			{
 				"indexed": false,
-				"internalType": "uint256",
+				"internalType": "enum PuzzleRewards.Level",
 				"name": "level",
-				"type": "uint256"
+				"type": "uint8"
 			},
 			{
 				"indexed": false,
@@ -79,19 +105,6 @@ export const PUZZLE_REWARDS_ABI = [
 	{
 		"inputs": [],
 		"name": "EASY_NFT_ID",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "HARD_REWARD_AMOUNT",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -119,7 +132,7 @@ export const PUZZLE_REWARDS_ABI = [
 		"inputs": [],
 		"name": "claimReward",
 		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -133,9 +146,9 @@ export const PUZZLE_REWARDS_ABI = [
 		"name": "getPlayerLevel",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "enum PuzzleRewards.Level",
 				"name": "",
-				"type": "uint256"
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
@@ -152,6 +165,40 @@ export const PUZZLE_REWARDS_ABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "",
+				"type": "bytes"
+			}
+		],
+		"name": "onERC721Received",
+		"outputs": [
+			{
+				"internalType": "bytes4",
+				"name": "",
+				"type": "bytes4"
+			}
+		],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -178,9 +225,9 @@ export const PUZZLE_REWARDS_ABI = [
 		"name": "playerLevels",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "enum PuzzleRewards.Level",
 				"name": "",
-				"type": "uint256"
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",

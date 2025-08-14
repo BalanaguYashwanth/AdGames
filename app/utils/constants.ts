@@ -11,7 +11,11 @@ export const PIECE_COUNT = PUZZLE_CONFIG.GRID_SIZE * PUZZLE_CONFIG.GRID_SIZE;
 
 export const PUZZLE_PATHS = {
   PREVIEW: '/puzzle/preview.png',
-  COMPLETE: '/puzzle/complete.png',
+  LEVELS: [
+    "/puzzle/level-1.png",
+    "/puzzle/level-2.png",
+    "/puzzle/level-3.png",
+  ]
 } as const;
 
 export const DRAG_ACTIVATION = {
@@ -33,3 +37,19 @@ export const PUZZLE_DIMENSIONS = {
     return this.BOARD_GRID_SIZE + 2 * this.TAB_HEIGHT;
   }
 } as const;
+
+export const rewards = [
+  { level: 0, label: 'NFT', position: '25%' },
+  { level: 1, label: 'NFT', position: '75%' },
+  { level: 2, label: '0.01 ETH', position: '100%' },
+];
+
+export const GOOGLE_FORM = {
+  LINK: "https://forms.gle/W9g18zdK3PDBNcEC7"
+};
+
+export const NEYNAR_API ={
+  FETCH_USER: 'https://api.neynar.com/v2/farcaster/user/bulk-by-address'
+}
+
+export const FIREBASE_DB_API = "https://communityhouse-b50a0-default-rtdb.firebaseio.com";

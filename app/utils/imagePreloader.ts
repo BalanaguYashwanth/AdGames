@@ -12,7 +12,7 @@ export const preloadSingleImage = (src: string): Promise<HTMLImageElement> => {
 export const preloadPuzzleImages = (): Promise<HTMLImageElement[]> => {
   const imagesToPreload = [
     PUZZLE_PATHS.PREVIEW,
-    PUZZLE_PATHS.COMPLETE
+    ...PUZZLE_PATHS.LEVELS
   ];
 
   return Promise.all(

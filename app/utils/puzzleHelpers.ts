@@ -1,5 +1,5 @@
 import { JigsawPiece, EdgeType } from '../types/puzzle';
-import { PUZZLE_CONFIG, PIECE_COUNT, PUZZLE_DIMENSIONS } from './constants';
+import { PUZZLE_CONFIG, PIECE_COUNT, PUZZLE_DIMENSIONS, FIREBASE_DB_API } from './constants';
 
 const getInverseEdge = (edge: EdgeType): EdgeType => {
   if (edge === 'tab') return 'blank';
@@ -137,9 +137,28 @@ export const getButtonText = (playerLevel: number) => {
   return 'Play Again';
 };
 
-export const getTargetProgressWidth = (level: number) => {
+export const getTargetProgressWidth = (level: number): string => {
   if (level === 0) return '25%'; 
   if (level === 1) return '75%'; 
   if (level === 2) return '100%';
   return '0%';
 };
+
+export const trackUsersAnalytics = async (payload: any) => {
+    const timestamp = new Date().toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: 'UTC'
+        }).replace(/[, ]/g, '-').replace(/:/g, '-');
+
+    await fetch(`${FIREBASE_DB_API}/puzzle/${timestamp}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payload })
+    })
+  }
