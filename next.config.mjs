@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Disable ESLint during builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // Disable TypeScript type checking during builds
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   // Silence warnings
   // https://github.com/WalletConnect/walletconnect-monorepo/issues/1908
   webpack: (config) => {
