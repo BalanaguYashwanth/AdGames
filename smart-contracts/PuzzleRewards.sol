@@ -6,25 +6,28 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract PuzzleRewards is Ownable, IERC721Receiver, ReentrancyGuard {
     using Address for address payable;
 
     IERC721 public immutable nftContract;
+    AggregatorV3Interface internal priceFeed;
 
     enum Level { Easy, Medium, Hard, Completed }
-
     mapping(address => Level) public playerLevels;
 
     uint256 public constant EASY_NFT_ID = 0;
     uint256 public constant MEDIUM_NFT_ID = 1;
-    uint256 public constant HARD_REWARD_AMOUNT = 0.001 ether;
 
     event RewardClaimed(address indexed player, Level level, string rewardType);
 
-    constructor(address _nftContractAddress) Ownable(msg.sender) {
+    constructor(address _nftContractAddress, address _priceFeed) Ownable(msg.sender) {
         require(_nftContractAddress != address(0), "Invalid NFT contract address");
         nftContract = IERC721(_nftContractAddress);
+
+        require(_priceFeed != address(0), "Invalid price feed address");
+        priceFeed = AggregatorV3Interface(_priceFeed);
     }
 
     function claimReward() external nonReentrant {
@@ -42,10 +45,15 @@ contract PuzzleRewards is Ownable, IERC721Receiver, ReentrancyGuard {
             emit RewardClaimed(player, currentLevel, "Medium NFT"); 
             nftContract.safeTransferFrom(address(this), player, MEDIUM_NFT_ID);
         } else if (currentLevel == Level.Hard) {
-            require(address(this).balance >= HARD_REWARD_AMOUNT, "Insufficient funds for reward.");
+            (, int price, , , ) = priceFeed.latestRoundData();
+            uint256 ethPrice = uint256(price);
+            uint256 rewardInWei = (0.1 * 1e8 * 1e18) / ethPrice; 
+
+            require(address(this).balance >= rewardInWei, "Insufficient funds for reward.");
             playerLevels[player] = Level.Completed;
             emit RewardClaimed(player, currentLevel, "Hard ETH");
-            (bool success, ) = player.call{value: HARD_REWARD_AMOUNT}("");
+
+            (bool success, ) = player.call{value: rewardInWei}("");
             require(success, "Failed to send ETH reward.");
         }
     }

@@ -14,7 +14,7 @@ export const CongratsScreen = () => {
     playerLevel
   } = usePuzzleGameContext();
 
-  const [completedLevel] = useState(hasClaimedForLevel ? playerLevel - 1 : playerLevel);
+  const completedLevel = hasClaimedForLevel ? playerLevel - 1 : playerLevel;
 
   const handlePartnerClick = () => {
     window.open(GOOGLE_FORM.LINK, '_blank');

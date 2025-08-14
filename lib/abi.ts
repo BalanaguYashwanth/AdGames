@@ -5,6 +5,11 @@ export const PUZZLE_REWARDS_ABI = [
 				"internalType": "address",
 				"name": "_nftContractAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_priceFeed",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -100,19 +105,6 @@ export const PUZZLE_REWARDS_ABI = [
 	{
 		"inputs": [],
 		"name": "EASY_NFT_ID",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "HARD_REWARD_AMOUNT",
 		"outputs": [
 			{
 				"internalType": "uint256",

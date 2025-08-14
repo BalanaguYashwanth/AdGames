@@ -47,3 +47,9 @@ export const rewards = [
 export const GOOGLE_FORM = {
   LINK: "https://forms.gle/W9g18zdK3PDBNcEC7"
 };
+
+export const NEYNAR_API ={
+  FETCH_USER: 'https://api.neynar.com/v2/farcaster/user/bulk-by-address'
+}
+
+export const FIREBASE_DB_API = "https://communityhouse-b50a0-default-rtdb.firebaseio.com";
