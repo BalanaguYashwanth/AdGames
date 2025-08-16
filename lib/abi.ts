@@ -3,7 +3,7 @@ export const PUZZLE_REWARDS_ABI = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_nftContractAddress",
+				"name": "_nftContract",
 				"type": "address"
 			},
 			{
@@ -103,33 +103,13 @@ export const PUZZLE_REWARDS_ABI = [
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "EASY_NFT_ID",
-		"outputs": [
+		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "metadataUri",
+				"type": "string"
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "MEDIUM_NFT_ID",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "claimReward",
 		"outputs": [],
 		"stateMutability": "nonpayable",
@@ -159,46 +139,12 @@ export const PUZZLE_REWARDS_ABI = [
 		"name": "nftContract",
 		"outputs": [
 			{
-				"internalType": "contract IERC721",
+				"internalType": "contract MyNFT",
 				"name": "",
 				"type": "address"
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes",
-				"name": "",
-				"type": "bytes"
-			}
-		],
-		"name": "onERC721Received",
-		"outputs": [
-			{
-				"internalType": "bytes4",
-				"name": "",
-				"type": "bytes4"
-			}
-		],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -228,6 +174,19 @@ export const PUZZLE_REWARDS_ABI = [
 				"internalType": "enum PuzzleRewards.Level",
 				"name": "",
 				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "priceFeed",
+		"outputs": [
+			{
+				"internalType": "contract AggregatorV3Interface",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",

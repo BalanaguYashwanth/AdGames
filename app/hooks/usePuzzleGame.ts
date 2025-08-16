@@ -1,22 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
-import { GameScreen } from '../types/puzzle';
+import { useAccount, useReadContract } from 'wagmi';
 import { usePuzzleState } from './usePuzzleState';
 import { usePuzzleDragAndDrop } from './usePuzzleDragAndDrop';
 import { useRewardClaim } from './useRewardClaim';
-import { isPuzzleComplete, trackUsersAnalytics } from '../utils/puzzleHelpers';
-import { useAccount } from 'wagmi';
-import { readContract } from '@wagmi/core';
-import { config } from '@/lib/wagmiConfig';
 import { PUZZLE_REWARDS_ABI } from '@/lib/abi';
+import { isPuzzleComplete, trackUsersAnalytics } from '../utils/puzzleHelpers';
 import { preloadPuzzleImages } from '../utils/imagePreloader';
 import { NEYNAR_API } from '../utils/constants';
+import { GameScreen } from '../types/puzzle';
 
 const PUZZLE_REWARDS_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PUZZLE_REWARDS_CONTRACT_ADDRESS as `0x${string}`;
 
 export const usePuzzleGame = () => {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('preview');
   const [playerLevel, setPlayerLevel] = useState(0);
-  const [isFetchingLevel, setIsFetchingLevel] = useState(true);
+  const [claimError, setClaimError] = useState<string | null>(null);
+  const [hasClaimedAll, setHasClaimedAll] = useState(false);
 
   const { address } = useAccount();
   const { puzzleState, puzzleBoardSlots, dropPiece, resetPuzzle } = usePuzzleState();
@@ -28,36 +27,34 @@ export const usePuzzleGame = () => {
 
   const { isClaiming, hasClaimedForLevel, executeRewardClaim, resetClaimStatus } = useRewardClaim();
 
-  const fetchPlayerLevel = useCallback(async () => {
-    if (address) {
-      setIsFetchingLevel(true);
-      try {
-        const level = await readContract(config, {
-          address: PUZZLE_REWARDS_CONTRACT_ADDRESS,
-          abi: PUZZLE_REWARDS_ABI,
-          functionName: 'getPlayerLevel',
-          args: [address],
-        });
-        setPlayerLevel(Number(level));
-      } catch (error) {
-        console.error("Failed to fetch player level:", error);
-        setPlayerLevel(0);
-      } finally {
-        setIsFetchingLevel(false);
-      }
-    } else {
-      setPlayerLevel(0);
-      setIsFetchingLevel(false);
-    }
-  }, [address]);
+  const { data: onChainLevel, isLoading: isLoadingLevel } = useReadContract({
+    address: PUZZLE_REWARDS_CONTRACT_ADDRESS,
+    abi: PUZZLE_REWARDS_ABI,
+    functionName: 'getPlayerLevel',
+    args: [address!],
+  });
 
   useEffect(() => {
-    fetchPlayerLevel();
-  }, [fetchPlayerLevel]);
+     updatePlayerLevelFromChain(onChainLevel)
+  }, [onChainLevel, address])
 
   useEffect(() => {
     preloadPuzzleImages()
   }, []);
+
+  const updatePlayerLevelFromChain = (levelFromChain: unknown) => {;
+    if (levelFromChain !== undefined && levelFromChain !== null) {
+      const level = Number(levelFromChain);
+
+      if (level >= 3) { 
+        setHasClaimedAll(true);
+        setCurrentScreen('completed');
+      } else {
+        setHasClaimedAll(false);
+        setPlayerLevel(level);
+      }
+    }
+  }
 
   const logUser = useCallback(async () => {
     if (!address) return;
@@ -78,9 +75,14 @@ export const usePuzzleGame = () => {
   }, [address]);
 
   const startPuzzleGame = () => {
+    if (hasClaimedAll) {
+      setCurrentScreen('completed');
+      return;
+    }
     logUser();
     resetClaimStatus();
     resetPuzzle();
+    setClaimError(null);
     setCurrentScreen('puzzle');
   };
 
@@ -96,17 +98,21 @@ export const usePuzzleGame = () => {
 
   const handleRewardClaim = async () => {
     try {
-      await executeRewardClaim();
-      await fetchPlayerLevel();
+      setClaimError(null);
+      await executeRewardClaim(playerLevel);
+      setPlayerLevel(prev => prev + 1);
     } catch (error: unknown) {
-      console.log(`${error instanceof Error ? error.message : 'An unknown error occurred during minting.'}`);
+      const msg = error instanceof Error 
+      ? error.message 
+      : 'We’re not able to process the reward at this time. Sorry for the inconvenience.';
+      setClaimError(msg);
+      setCurrentScreen('preview');
     }
   };
 
   return {
     currentScreen,
     playerLevel,
-    isFetchingLevel,
     puzzleState,
     puzzleBoardSlots,
     isClaiming,
@@ -116,6 +122,9 @@ export const usePuzzleGame = () => {
 
     startPuzzleGame,
     validatePuzzleCompletion,
-    handleRewardClaim
+    handleRewardClaim,
+    claimError,
+    hasClaimedAll,
+    isLoadingLevel
   };
 };

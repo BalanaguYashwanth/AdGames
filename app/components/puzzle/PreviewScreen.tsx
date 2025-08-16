@@ -3,7 +3,7 @@ import { usePuzzleGameContext } from '@/app/context/PuzzleGameContext';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 
 export const PreviewScreen = () => {
-  const { startPuzzleGame, isFetchingLevel } = usePuzzleGameContext();
+  const { startPuzzleGame, isLoadingLevel } = usePuzzleGameContext();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 text-center">
@@ -17,15 +17,15 @@ export const PreviewScreen = () => {
         />
         <button 
           onClick={startPuzzleGame}
-          disabled={isFetchingLevel}
           className="w-full py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-medium transition-colors"
         >
-          {isFetchingLevel ? (
-            <LoadingSpinner />
+          {isLoadingLevel ? (
+            <div className="flex flex-col items-center justify-center">
+              <LoadingSpinner />
+            </div>
           ) : (  
             "Start Puzzle"
-          )}
-          
+          )}    
         </button>
       </div>
     </div>

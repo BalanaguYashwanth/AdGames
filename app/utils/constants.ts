@@ -41,7 +41,7 @@ export const PUZZLE_DIMENSIONS = {
 export const rewards = [
   { level: 0, label: 'NFT', position: '25%' },
   { level: 1, label: 'NFT', position: '75%' },
-  { level: 2, label: '0.01 ETH', position: '100%' },
+  { level: 2, label: 'ETH', position: '100%' },
 ];
 
 export const GOOGLE_FORM = {
@@ -53,3 +53,9 @@ export const NEYNAR_API ={
 }
 
 export const FIREBASE_DB_API = "https://communityhouse-b50a0-default-rtdb.firebaseio.com";
+
+export const METADATA_URIS: Record<number, string> = {
+  0: "ipfs://bafkreiawzuycdu3su4g5hz3r2s5ycahctkqqa2qdzhxlmtwgy25nsodbw4", // Level 1
+  1: "ipfs://bafkreiaol6abf7cysemjkarfou3i2dibp4sffzbgwtup5tjrssnicmtaue", // Level 2
+  2: "ipfs://hard-level-placeholder", // Level 3
+};

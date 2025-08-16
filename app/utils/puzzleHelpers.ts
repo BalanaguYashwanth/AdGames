@@ -132,9 +132,8 @@ export const createActivePieceDetails = (
 };
 
 export const getButtonText = (playerLevel: number) => {
-  if (playerLevel === 0) return 'Play Medium';
-  if (playerLevel === 1) return 'Play Hard';
-  return 'Play Again';
+  if (playerLevel === 1) return 'Play Medium';
+  if (playerLevel === 2) return 'Play Hard';
 };
 
 export const getTargetProgressWidth = (level: number): string => {
