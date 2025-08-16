@@ -7,12 +7,14 @@ import { getTargetProgressWidth } from '@/app/utils/puzzleHelpers';
 import { RewardTrackProps } from '@/app/types/puzzle';
 
 export const RewardTrack = ({ playerLevel }: RewardTrackProps) => {
-  const startWidth = getTargetProgressWidth(playerLevel - 1);
-  const [progressWidth, setProgressWidth] = useState(startWidth);
-
+  const [progressWidth, setProgressWidth] = useState('0%');
+  
   useEffect(() => {
-    const targetWidth = getTargetProgressWidth(playerLevel);
+    const prevWidth = getTargetProgressWidth(playerLevel - 1);
+    setProgressWidth(prevWidth);
+
     const timeout = setTimeout(() => {
+      const targetWidth = getTargetProgressWidth(playerLevel);
       setProgressWidth(targetWidth);
     }, 200);
     return () => clearTimeout(timeout);

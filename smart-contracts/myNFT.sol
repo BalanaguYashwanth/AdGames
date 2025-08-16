@@ -9,44 +9,48 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract MyNFT is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
     using Counters for Counters.Counter;
-
     Counters.Counter private _tokenIdCounter;
 
+    mapping(address => bool) public minters;
+
+    event MinterUpdated(address indexed minter, bool allowed);
+
     constructor(address initialOwner)
-        ERC721("My Weather NFT", "WNFT")
+        ERC721("NFT Reward", "RNFT")
         Ownable(initialOwner)
     {}
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    modifier onlyMinter() {
+        require(minters[msg.sender], "Not authorized to mint");
+        _;
+    }
+
+    function setMinter(address minter, bool allowed) external onlyOwner {
+        minters[minter] = allowed;
+        emit MinterUpdated(minter, allowed);
+    }
+
+    function safeMint(address to, string memory uri) external onlyMinter {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
     }
 
     function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (bool)
+        public view override(ERC721, ERC721URIStorage) returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }
 
     function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
+        public view override(ERC721, ERC721URIStorage) returns (string memory)
     {
         return super.tokenURI(tokenId);
     }
 
     function _update(address to, uint256 tokenId, address auth)
-        internal
-        override(ERC721)
-        returns (address)
+        internal override(ERC721) returns (address)
     {
         return super._update(to, tokenId, auth);
     }
