@@ -30,7 +30,7 @@ export type PuzzleAction =
   | { type: 'DROP_PIECE'; payload: { targetSlotId: number; sourceSlotId: number } }
   | { type: 'RESET_PUZZLE' };
 
-export type GameScreen = 'preview' | 'puzzle' | 'congrats';
+export type GameScreen = 'preview' | 'puzzle' | 'congrats' | 'completed';
 
 export interface EthereumProvider {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
@@ -80,4 +80,9 @@ export interface RewardMarkerProps {
 
 export interface ProgressBarProps {
   width: string;
+}
+
+export interface RewardPopupProps {
+  rewardName: string;
+  onClose: () => void;
 }

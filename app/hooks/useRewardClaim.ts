@@ -10,13 +10,13 @@ export const useRewardClaim = () => {
   const { sendTransactionAsync } = useSendTransaction();
   const { prepareFarcasterWallet } = useWalletOperations();
 
-  const executeRewardClaim = async (): Promise<string> => {
+  const executeRewardClaim = async (playerLevel: number): Promise<string> => {
     setIsClaiming(true);
     setHasClaimedForLevel(false);
     
     try {
       const walletInfo = await prepareFarcasterWallet();
-      const transactionData = await RewardClaimService.prepareClaimTransaction(walletInfo.address);
+      const transactionData = await RewardClaimService.prepareClaimTransaction(walletInfo.address, playerLevel);
       const txHash = await RewardClaimService.executeClaimTransaction(sendTransactionAsync, transactionData);
       
       setHasClaimedForLevel(true);
