@@ -26,7 +26,7 @@ export const CongratsScreen = () => {
     }
   }, [hasClaimedForLevel]);
 
-  const handlePartnerClick = () => {
+  const handleAdvertiseClick = () => {
     window.open(GOOGLE_FORM.LINK, '_blank');
   }
 
@@ -35,10 +35,10 @@ export const CongratsScreen = () => {
       {<Confetti recycle={false} numberOfPieces={200} />}
 
       <button
-        onClick={handlePartnerClick}
+        onClick={handleAdvertiseClick}
         className="fixed sm:absolute top-4 right-4 sm:top-6 sm:right-6 py-2 px-3 sm:px-4 bg-white/20 hover:bg-white/30 rounded-lg font-medium transition-colors z-20 text-sm sm:text-base"
       >
-        Partner With Us
+        Advertise With Us
       </button>
 
       <div className="max-w-md w-full bg-white/10 backdrop-blur-sm rounded-2xl p-6 z-10">
