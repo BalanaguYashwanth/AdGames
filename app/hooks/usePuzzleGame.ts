@@ -42,17 +42,22 @@ export const usePuzzleGame = () => {
     preloadPuzzleImages()
   }, []);
 
-  const updatePlayerLevelFromChain = (levelFromChain: unknown) => {;
-    if (levelFromChain !== undefined && levelFromChain !== null) {
-      const level = Number(levelFromChain);
+  const updatePlayerLevelFromChain = (onChainLevel: unknown) => {
+    const localLevel = localStorage.getItem('playerLevel');
+    const parsedLocalLevel = localLevel ? parseInt(localLevel, 10) : 0;
 
-      if (level >= 3) { 
+    if (onChainLevel !== undefined && onChainLevel !== null) {
+      const levelFromChain = Number(onChainLevel);
+
+      if (levelFromChain >= 3) { 
         setHasClaimedAll(true);
         setCurrentScreen('completed');
       } else {
         setHasClaimedAll(false);
-        setPlayerLevel(level);
+        setPlayerLevel(Math.max(levelFromChain, parsedLocalLevel));
       }
+    } else if (parsedLocalLevel > 0) {
+      setPlayerLevel(parsedLocalLevel);
     }
   }
 
@@ -100,7 +105,11 @@ export const usePuzzleGame = () => {
     try {
       setClaimError(null);
       await executeRewardClaim(playerLevel);
-      setPlayerLevel(prev => prev + 1);
+
+      const nextLevel = playerLevel + 1;
+      setPlayerLevel(nextLevel);
+
+      localStorage.setItem('playerLevel', nextLevel.toString());
     } catch (error: unknown) {
       const msg = error instanceof Error 
       ? error.message 
