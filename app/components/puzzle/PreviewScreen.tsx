@@ -17,7 +17,11 @@ export const PreviewScreen = () => {
         />
         <button 
           onClick={startPuzzleGame}
-          className="w-full py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-medium transition-colors"
+          disabled={isLoadingLevel}
+          className={`w-full py-3 rounded-lg text-white font-medium transition-colors 
+            ${isLoadingLevel 
+              ? "bg-blue-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"}`}
         >
           {isLoadingLevel ? (
             <div className="flex flex-col items-center justify-center">

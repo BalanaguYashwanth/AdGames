@@ -39,9 +39,9 @@ export const PUZZLE_DIMENSIONS = {
 } as const;
 
 export const rewards = [
-  { level: 0, label: 'NFT', position: '25%' },
-  { level: 1, label: 'NFT', position: '75%' },
-  { level: 2, label: 'ETH', position: '100%' },
+  { level: 0, label: 'NFT', shortLabel: 'NFT', position: '25%' },
+  { level: 1, label: 'NFT', shortLabel: 'NFT', position: '75%' },
+  { level: 2, label: '$1 worth of ETH', shortLabel: 'ETH', position: '100%' },
 ];
 
 export const GOOGLE_FORM = {

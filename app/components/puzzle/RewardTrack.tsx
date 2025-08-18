@@ -27,7 +27,7 @@ export const RewardTrack = ({ playerLevel }: RewardTrackProps) => {
           {rewards.map((item) => (
             <RewardLabel
               key={item.level}
-              label={item.label}
+              label={item.shortLabel}
               position={item.position}
               isUnlocked={playerLevel >= item.level}
             />
