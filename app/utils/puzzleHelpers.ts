@@ -132,6 +132,7 @@ export const createActivePieceDetails = (
 };
 
 export const getButtonText = (playerLevel: number) => {
+  if (playerLevel >= 3) return '';
   if (playerLevel === 1) return 'Play Medium';
   if (playerLevel === 2) return 'Play Hard';
 };

@@ -14,7 +14,8 @@ export const CongratsScreen = () => {
     handleRewardClaim,
     playerLevel,
     claimError,
-    hasClaimedAll
+    hasClaimedAll,
+    handlePopupClose,
   } = usePuzzleGameContext();
 
   const [showPopup, setShowPopup] = useState(false);
@@ -72,7 +73,7 @@ export const CongratsScreen = () => {
             <>
               <RewardTrack playerLevel={playerLevel - 1} />
 
-              {!hasClaimedAll && (
+              {!hasClaimedAll && playerLevel < 3 && (
                 <div className="flex flex-col gap-3">
                   <button
                     onClick={startPuzzleGame}
@@ -89,7 +90,10 @@ export const CongratsScreen = () => {
       {showPopup && (
         <RewardPopup
           rewardName={rewards[playerLevel - 1]?.label ?? "Reward"}
-          onClose={() => setShowPopup(false)}
+          onClose={() => {
+            handlePopupClose();
+            setShowPopup(false);
+          }}
         />
       )}
     </div>

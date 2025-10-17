@@ -26,8 +26,8 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "^18",
-    "viem": "^2.27.2",
-    "wagmi": "^2.16.1"
+    "viem": "^2.38.3",
+    "wagmi": "^2.18.1"
   },
   "devDependencies": {
     "@types/node": "^22",
