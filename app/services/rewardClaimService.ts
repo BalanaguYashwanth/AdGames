@@ -1,4 +1,4 @@
-import { ClaimTransactionData, SendTransaction } from '../types/puzzle';
+import { ClaimTransactionData } from '../types/puzzle';
 
 export class RewardClaimService {
   static async prepareClaimTransaction(userAddress: string, playerLevel: number): Promise<ClaimTransactionData> {
@@ -21,25 +21,5 @@ export class RewardClaimService {
     }
 
     return transactionData;
-  }
-
-  static async executeClaimTransaction(
-    sendTransactionAsync: SendTransaction,
-    transactionData: ClaimTransactionData
-  ): Promise<string> {
-    const txParams = transactionData.params[0];
-
-    try {
-      const txHash = await sendTransactionAsync({
-        to: txParams.to,
-        data: txParams.data,
-        value: BigInt(txParams.value || '0'),
-      });
-      
-      return txHash;
-    } catch (error) {
-      console.error("Failed to send transaction:", error);
-      throw new Error("Transaction execution failed");
-    }
   }
 }
